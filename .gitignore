@@ -1,0 +1,16 @@
+# Archivos de Python que no deben subirse
+__pycache__/
+*.pyc
+*.pyo
+
+# Configuración del entorno virtual (si usas virtualenv)
+venv/
+.env
+
+# Archivos de logs
+*.log
+
+# Configuración de IDEs
+.vscode/
+.idea/
+.sqlite3
