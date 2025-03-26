@@ -21,7 +21,7 @@ def login(request):
 
 
 
-def logout(request):
+def logoutView(request):
     logout(request)
     return redirect('login')
 
