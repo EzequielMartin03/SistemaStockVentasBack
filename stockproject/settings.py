@@ -40,9 +40,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'stockventas',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'products',
+    'sales',
+    'reports',
+    'purchases',
+    'customers',
+    'categories',
+    'users',
+    
 ]
 
 REST_FRAMEWORK = {
@@ -67,11 +74,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'stockproject.urls'
 
+# settings.py
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [
+            BASE_DIR / 'templates',  # Directorio global de plantillas
+        ],
+        'APP_DIRS': True,  # Permite que Django busque plantillas dentro de cada app
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -82,6 +93,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'stockproject.wsgi.application'
 
