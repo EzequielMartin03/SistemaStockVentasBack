@@ -13,4 +13,10 @@ venv/
 # Configuración de IDEs
 .vscode/
 .idea/
-.sqlite3
+
+# Base de datos SQLite
+*.sqlite3
+
+# Archivos de migraciones de Django
+*/migrations/*.py
+!*/migrations/__init__.py
