@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Categoria
 
 
 def login(request):
@@ -31,3 +34,6 @@ def logoutView(request):
 def index(request):
     return render(request, 'index.html')
 
+def category(request):
+    categories = Categoria.objects.all()
+    return render(request, 'category.html', {'categories': categories})
