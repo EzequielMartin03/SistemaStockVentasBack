@@ -145,10 +145,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Si tienes archivos estáticos fuera de la carpeta app, como en una carpeta global 'static':
+import os
+
 STATICFILES_DIRS = [
-    BASE_DIR / "static",  # Ajusta esta ruta si es necesario
+    os.path.join(BASE_DIR, 'static'),  # Esto asegura que la ruta se construya correctamente
 ]
+
 
 
 # Default primary key field type
