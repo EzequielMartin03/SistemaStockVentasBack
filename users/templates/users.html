@@ -49,10 +49,10 @@
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     <td>
-                      <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#userModal" 
-                        onclick="openModal({{ user.id }}, '{{ user.username }}', '{{ user.email }}')">
+                        <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#userModal" 
+                        data-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}">
                         <i class="fas fa-edit"></i> Editar
-                      </button>
+                      </button>                      
                       <form action="{% url 'userDelete' user.id %}" method="POST" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger btn-sm">
