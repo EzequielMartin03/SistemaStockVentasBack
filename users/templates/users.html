@@ -43,6 +43,7 @@
                                     <th>ID</th>
                                     <th>Nombre de Usuario</th>
                                     <th>Email</th>
+                                    <th>Rol</th> <!-- Columna de rol -->
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -52,12 +53,14 @@
                                     <td>{{ user.id }}</td>
                                     <td>{{ user.username }}</td>
                                     <td>{{ user.email }}</td>
+                                    <td>{{ user.get_role_display }}</td> <!-- Mostrar rol -->
                                     <td>
                                        <!-- Botón editar -->
                                         <button class="btn btn-warning btn-sm edit-user-btn" 
                                         data-id="{{ user.id }}" 
                                         data-username="{{ user.username }}" 
                                         data-email="{{ user.email }}" 
+                                        data-role="{{ user.role }}" 
                                         data-toggle="modal" 
                                         data-target="#editUserModal">
                                         <i class="fas fa-edit"></i> Editar
@@ -108,6 +111,13 @@
                         <label>Contraseña</label>
                         <input type="password" name="password" class="form-control" required>
                     </div>
+                    <div class="form-group">
+                        <label>Rol</label>
+                        <select name="role" id="edit-role" class="form-control" required>
+                            <option value="admin">Admin</option>
+                            <option value="employee">Empleado</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Guardar</button>
@@ -143,6 +153,13 @@
                         <label>Nueva Contraseña (opcional)</label>
                         <input type="password" id="edit-password" name="password" class="form-control">
                     </div>
+                    <div class="form-group">
+                        <label>Rol</label>
+                        <select name="role" id="edit-role" class="form-control" required>
+                            <option value="admin">Admin</option>
+                            <option value="employee">Empleado</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
@@ -162,11 +179,13 @@
                 var userId = this.getAttribute('data-id');
                 var username = this.getAttribute('data-username');
                 var email = this.getAttribute('data-email');
+                var role = this.getAttribute('data-role');
                 
                 // Rellenar los campos del formulario en el modal
                 document.getElementById('edit-user-id').value = userId;
                 document.getElementById('edit-username').value = username;
                 document.getElementById('edit-email').value = email;
+                document.getElementById('edit-role').value = role;
             });
         });
     });

@@ -49,17 +49,18 @@ INSTALLED_APPS = [
     'customers',
     'categories',
     'users',
+    'rest_framework_simplejwt',
+    'tokenjwt',
     
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
+    ),
 }
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -165,6 +166,9 @@ CORS_ALLOWED_ORIGINS = [
 
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
 
 
 
