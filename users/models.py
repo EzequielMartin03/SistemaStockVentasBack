@@ -8,17 +8,17 @@ class CustomUser(AbstractUser):
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='employee')
 
-    # Modificar los campos de grupos y permisos con related_name
+  
     groups = models.ManyToManyField(
         'auth.Group', 
-        related_name='customuser_set',  # Cambiar el related_name para evitar el conflicto
+        related_name='customuser_set',  
         blank=True,
         help_text='The groups this user belongs to.',
         related_query_name='customuser'
     )
     user_permissions = models.ManyToManyField(
         'auth.Permission',
-        related_name='customuser_permissions',  # Cambiar el related_name para evitar el conflicto
+        related_name='customuser_permissions',  
         blank=True,
         help_text='Specific permissions for this user.',
         related_query_name='customuser'

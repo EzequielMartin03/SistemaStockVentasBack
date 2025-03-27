@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth import get_user_model
 from django.contrib import messages
+from decorators import role_required
 
 from .models import CustomUser
 
-# Usar el CustomUser
+
 User = get_user_model()
 
-# Vista para login
+
 def login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -23,35 +24,35 @@ def login(request):
     return render(request, 'login.html')
 
 
-# Vista para logout
+
 def logoutView(request):
     logout(request)
     return redirect('login')
 
 
-# Vista para listar los usuarios
+@role_required('Admin')
 def user_list(request):
     users = User.objects.all()
     return render(request, 'users.html', {'users': users})
 
-
+@role_required('Admin')
 def add_user(request):
-    roles = CustomUser.ROLE_CHOICES  # Pasa los roles disponibles al template
+    roles = CustomUser.ROLE_CHOICES
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
         role = request.POST['role']
 
-        # Verificar si el usuario ya existe
+        
         if User.objects.filter(username=username).exists():
             messages.error(request, 'El usuario ya existe')
         else:
             try:
-                # Crear el usuario
+                
                 user = User.objects.create_user(username=username, email=email, password=password)
 
-                # Asignar el rol al usuario
+               
                 user.role = role
                 user.save()
 
@@ -60,17 +61,16 @@ def add_user(request):
                 messages.error(request, f'Error al crear el usuario: {e}')
     return redirect('user_list')
 
-
-# Vista para editar un usuario
+@role_required('Admin')
 def edit_user(request):
     if request.method == 'POST':
         user_id = request.POST.get('id')
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        role = request.POST.get('role')  # Obtener el rol desde el formulario
+        role = request.POST.get('role')  
 
-        # Verificar que el ID esté presente
+    
         if not user_id:
             messages.error(request, 'El ID del usuario es obligatorio')
             return redirect('user_list')
@@ -78,15 +78,15 @@ def edit_user(request):
         try:
             user = User.objects.get(id=user_id)
 
-            # Verificar si los datos de username y email son correctos
+           
             user.username = username
             user.email = email
 
-            # Si la contraseña es proporcionada, actualizarla
+            
             if password:
                 user.set_password(password)
 
-            # Actualizar el rol
+           
             user.role = role
             user.save()
 
@@ -94,13 +94,13 @@ def edit_user(request):
         except User.DoesNotExist:
             messages.error(request, 'El usuario no existe')
         except Exception as e:
-            # Capturar cualquier otro error
+           
             messages.error(request, f'Ocurrió un error: {e}')
 
     return redirect('user_list')
 
 
-# Vista para eliminar un usuario
+@role_required('Admin')
 def delete_user(request):
     if request.method == 'POST':
         user_id = request.POST['id']
