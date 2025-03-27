@@ -1,14 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout
-from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-
-
-
-
-def login(request):
-    return render(request, 'login.html')
+from django.contrib import messages
 
 def login(request):
     if request.method == 'POST':
@@ -19,63 +12,71 @@ def login(request):
             auth_login(request, user)
             return redirect('/categories') 
         else:
-            return render(request, 'login.html', {'error': 'Credenciales incorrectas'})
+            messages.error(request, 'Credenciales incorrectas')
     return render(request, 'login.html')
-
-
 
 def logoutView(request):
     logout(request)
     return redirect('login')
 
-def userList(request):
+def user_list(request):
     users = User.objects.all()
     return render(request, 'users.html', {'users': users})
 
-from django.contrib import messages
-from django.contrib.auth.models import User
-from django.shortcuts import redirect
-from django.views.decorators.csrf import csrf_exempt
-
-@csrf_exempt  # Solo para pruebas, quita esta línea en producción
-def userCreate(request):
+def add_user(request):
     if request.method == 'POST':
-        user_id = request.POST.get('user_id')
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'El usuario ya existe')
+        else:
+            User.objects.create_user(username=username, email=email, password=password)
+            messages.success(request, 'Usuario creado exitosamente')
+    return redirect('user_list')
+
+def edit_user(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('id')
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        if user_id:  # Editar usuario existente
+        # Verificar que el ID esté presente
+        if not user_id:
+            messages.error(request, 'El ID del usuario es obligatorio')
+            return redirect('user_list')
+
+        try:
             user = User.objects.get(id=user_id)
+
+            # Verificar si los datos de username y email son correctos
             user.username = username
             user.email = email
+
+            # Si la contraseña es proporcionada, actualizarla
+            if password:
+                user.set_password(password)
+            
             user.save()
-            messages.success(request, "Usuario actualizado correctamente.")
-        else:  # Crear nuevo usuario
-            if not password:
-                messages.error(request, "La contraseña es obligatoria para nuevos usuarios.")
-                return redirect('userList')
+            messages.success(request, 'Usuario actualizado exitosamente')
+        except User.DoesNotExist:
+            messages.error(request, 'El usuario no existe')
+        except Exception as e:
+            # Capturar cualquier otro error
+            messages.error(request, f'Ocurrió un error: {e}')
 
-            User.objects.create_user(username=username, email=email, password=password)
-            messages.success(request, "Usuario creado correctamente.")
-
-        return redirect('userList')
+    return redirect('user_list')
 
 
-def userUpdate(request, pk):
-    user = get_object_or_404(User, pk=pk)
+def delete_user(request):
     if request.method == 'POST':
-        form = UserChangeForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('userList')
-    else:
-        form = UserChangeForm(instance=user)
-    return render(request, 'users/user_form.html', {'form': form})
-
-def userDelete(request, pk):
-    user = get_object_or_404(User, pk=pk)
-    if request.method == 'POST':
-        user.delete()
-        return redirect('userList')
-    return render(request, 'users/user_confirm_delete.html', {'user': user})
+        user_id = request.POST['id']
+        users_count = User.objects.count()
+        if users_count > 1:
+            user = User.objects.get(id=user_id)
+            user.delete()
+            messages.success(request, 'Usuario eliminado exitosamente')
+        else:
+            messages.error(request, 'No se puede eliminar el único usuario restante')
+    return redirect('user_list')
