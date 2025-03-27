@@ -1,0 +1,122 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content-header">
+  <div class="container-fluid">
+    <h1 class="m-0 text-dark">Gestión de Usuarios</h1>
+  </div>
+</div>
+
+<section class="content">
+  <div class="container-fluid">
+    {% if messages %}
+      <div class="row">
+        <div class="col-12">
+          {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Usuarios</h3>
+            <div class="card-tools">
+              <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#userModal" onclick="openModal()">
+                <i class="fas fa-plus"></i> Nuevo Usuario
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre de Usuario</th>
+                  <th>Email</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                  <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#userModal" 
+                        data-id="{{ user.id }}" data-username="{{ user.username }}" data-email="{{ user.email }}">
+                        <i class="fas fa-edit"></i> Editar
+                      </button>                      
+                      <form action="{% url 'userDelete' user.id %}" method="POST" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">
+                          <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Gestión de Usuario</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="userForm" method="POST" action="{% url 'userCreate' %}">
+
+          {% csrf_token %}
+          <input type="hidden" id="userId" name="user_id">
+          <div class="form-group">
+            <label for="username">Nombre de Usuario</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+          <div class="form-group" id="passwordField">
+            <label for="password">Contraseña</label>
+            <input type="password" class="form-control" id="password" name="password">
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal(id = null, username = '', email = '') {
+    document.getElementById('userId').value = id ? id : '';
+    document.getElementById('username').value = username;
+    document.getElementById('email').value = email;
+    
+    if (id) {
+      document.getElementById('modalTitle').textContent = 'Editar Usuario';
+      document.getElementById('passwordField').style.display = 'none';
+    } else {
+      document.getElementById('modalTitle').textContent = 'Nuevo Usuario';
+      document.getElementById('passwordField').style.display = 'block';
+    }
+  }
+</script>
+{% endblock %}
