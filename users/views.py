@@ -30,12 +30,12 @@ def logoutView(request):
     return redirect('login')
 
 
-@role_required('Admin')
+@role_required('admin')
 def user_list(request):
     users = User.objects.all()
     return render(request, 'users.html', {'users': users})
 
-@role_required('Admin')
+@role_required('admin')
 def add_user(request):
     roles = CustomUser.ROLE_CHOICES
     if request.method == 'POST':
@@ -61,7 +61,7 @@ def add_user(request):
                 messages.error(request, f'Error al crear el usuario: {e}')
     return redirect('user_list')
 
-@role_required('Admin')
+@role_required('admin')
 def edit_user(request):
     if request.method == 'POST':
         user_id = request.POST.get('id')
@@ -100,7 +100,7 @@ def edit_user(request):
     return redirect('user_list')
 
 
-@role_required('Admin')
+@role_required('admin')
 def delete_user(request):
     if request.method == 'POST':
         user_id = request.POST['id']
