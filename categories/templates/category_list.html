@@ -1,0 +1,79 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content-header">
+  <div class="container-fluid">
+    <h1 class="m-0 text-dark">Listado de Categorías</h1>
+  </div>
+</div>
+
+<section class="content">
+  <div class="container-fluid">
+
+    {% if messages %}
+      <div class="row">
+        <div class="col-12">
+          {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Categorías</h3>
+            <div class="card-tools">
+              <!-- Botón para crear nueva categoría -->
+              <a href="{% url 'category_create' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Nueva Categoría
+              </a>
+            </div>
+          </div>
+          <!-- /.card-header -->
+
+          <div class="card-body">
+            <!-- Aquí la tabla para mostrar las categorías en filas -->
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for category in categories %}
+                  <tr>
+                    <td>{{ category.id }}</td>
+                    <td>{{ category.name }}</td>
+                    <td>
+                      <a href="{% url 'category_update' category.id %}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit"></i> Editar
+                      </a>
+                      <a href="{% url 'category_delete' category.id %}" class="btn btn-danger btn-sm"
+                         onclick="return confirm('¿Estás seguro de eliminar esta categoría?')">
+                        <i class="fas fa-trash-alt"></i> Eliminar
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+
+          <div class="card-footer">
+            <!-- Aquí puedes poner paginación o algo similar si lo necesitas -->
+          </div>
+          <!-- /.card-footer -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
